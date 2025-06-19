@@ -34,118 +34,19 @@ CC1100 cc1100;
 
 //-------------------------- [End] --------------------------
 
-void print_help(int exval) {
-	printf("%s,%s by CW\r\n", PACKAGE, VERSION_SW);
-	printf("%s [-h] [-V] [-a My_Addr] [-r RxDemo_Addr] [-i Msg_Interval] [-t tx_retries] [-c channel] [-f frequency]\r\n", PACKAGE);
-	printf("          [-m modulation]\n\r\n\r");
-	printf("  -h              			print this help and exit\r\n");
-	printf("  -V              			print version and exit\r\n\r\n");
-	printf("  -v              			set verbose flag\r\n");
-	printf("  -a my address [1-255] 		set my address\r\n\r\n");
-	printf("  -r rx address [1-255] 	  	set RxDemo receiver address\r\n\r\n");
-	printf("  -i interval ms[1-6000] 	  	sets message interval timing\r\n\r\n");
-	printf("  -t tx_retries [0-255] 	  	sets message send retries\r\n\r\n");
-	printf("  -c channel 	[1-255] 		set transmit channel\r\n");
-	printf("  -f frequency  [315,434,868,915]  	set ISM band\r\n\r\n");
-	printf("  -m modulation [1,38,100,250,500,4]	set modulation\r\n\r\n");
-
-	exit(exval);
-}
-
 
 //|============================ Main ============================|
 int main(int argc, char *argv[]) {
 	//------------- command line option parser -------------------
-	int opt;
-	// no arguments given
-	if(argc == 1) {
-		fprintf(stderr, "This program needs arguments....\n\r\n\r");
-		print_help(1);
-	}
 
-	while((opt = getopt(argc, argv, "hVva:r:i:t:c:f:m:")) != -1) {
-		switch(opt) {
-		case 'h':
-			print_help(0);
-			break;
-		case 'V':
-			printf("%s %s\n\n", PACKAGE, VERSION_SW);
-			exit(0);
-			break;
-		case 'v':
-			printf("%s: Verbose option is set `%c'\n", PACKAGE, optopt);
-			cc1100_debug = 1;
-			break;
-		case 'a':
-			My_addr = atoi (optarg);
-			break;
-		case 'r':
-			rx_demo_addr = atoi (optarg);
-			break;
-		case 'i':
-			interval = atoi (optarg);
-			break;
-		case 't':
-			tx_retries = atoi (optarg);
-			break;
-		case 'c':
-			cc1100_channel_select = atoi (optarg);
-			break;
-		case 'f':
-			cc1100_freq_select = atoi (optarg);
-			switch(cc1100_freq_select){
-				case 315:
-					cc1100_freq_select = 1;
-					break;
-				case 434:
-					cc1100_freq_select = 2;
-					break;
-				case 868:
-					cc1100_freq_select = 3;
-					break;
-				case 915:
-					cc1100_freq_select = 4;
-					break;
-				}
-			break;
-			case 'm':
-				cc1100_mode_select = atoi (optarg);
+	My_addr = 1;
+	rx_demo_addr = 3;
+	interval = 1000;
+	tx_retries = 5;
+	cc1100_channel_select = 1;
+	cc1100_freq_select = 1; //315hz
+	cc1100_mode_select = 3; //100
 
-				switch(cc1100_mode_select){
-				case 1:
-					cc1100_mode_select = 1;
-					break;
-				case 38:
-					cc1100_mode_select = 2;
-					break;
-
-				case 100:
-					cc1100_mode_select = 3;
-					break;
-				case 250:
-					cc1100_mode_select = 4;
-					break;
-				case 500:
-					cc1100_mode_select = 5;
-					break;
-				case 4:
-					cc1100_mode_select = 6;
-					break;
-				}
-				break;
-				case ':':
-					fprintf(stderr, "%s: Error - Option `%c' needs a value\n\n", PACKAGE, optopt);
-					print_help(1);
-					break;
-				case '?':
-					fprintf(stderr, "%s: Error - No such option: `%c'\n\n", PACKAGE, optopt);
-					print_help(1);
-		}
-	}
-
-	// print all remaining options
-	for(; optind < argc; optind++)
-		printf("argument: %s\n", argv[optind]);
 
 	//------------- welcome message ------------------------
 	printf("Raspberry CC1101 SPI Library test\n");
